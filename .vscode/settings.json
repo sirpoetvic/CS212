@@ -1,0 +1,7 @@
+{
+    "java.debug.settings.onBuildFailureProceed": true,
+    "files.associations": {
+        "iosfwd": "cpp",
+        "algorithm": "cpp"
+    }
+}
