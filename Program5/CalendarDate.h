@@ -1,10 +1,3 @@
-/*
- * Victor Wong
- * Spring 2024, CS212, William Iverson
- * 04/15/2024
- * Program 3
- * Calendar Date Data Structure
- */
 #include <iostream>
 #include <string>
 using namespace std;
@@ -21,7 +14,7 @@ public:
         else return day < other.day;
     }
 
-    string ToString() { return to_string(month) + "/" + to_string(day) + "/" + to_string(year); }
+    string ToString() { return (to_string(month) + "/" + to_string(day) + "/" + to_string(year)); }
 
     friend ostream& operator<<(ostream& os, const CalendarDate& date)
     {
@@ -40,5 +33,9 @@ public:
         CalendarDate temp(*this);
         ++(this->year);
         return temp;
+    }
+
+    int hashCode() {
+        return day + 31*month + 366*year;
     }
 };
