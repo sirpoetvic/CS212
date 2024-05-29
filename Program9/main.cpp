@@ -18,15 +18,19 @@ using namespace std;
 
 void ShowSet(const Set& set, const string& setName) {
     cout << setName << ": " << endl;
+    int integer = 0;
     for (int element : set) {
         cout << element << " ";
+        integer = integer + 1;
+        if(integer > 10)
+            break;
     }
     cout << endl;
 }
 
 int main() {
     int setAElements[] = { 53, -64, 19, 67, -24, 90 };
-
+    
     Set setA, setB;
     for (int element : setAElements) {
         setA.Add(element);
@@ -34,7 +38,9 @@ int main() {
     ShowSet(setA, "Set A, initially");
 
     cout << "\nNow iterate through setA, adding sometimes:" << endl;
-    for (int element : setA) {
+
+    for (int element : setA)
+    {
         cout << element << " ";
         if (element > 0) setA.Add(-element);
     }

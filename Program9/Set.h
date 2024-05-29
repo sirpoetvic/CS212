@@ -5,6 +5,14 @@
 // Roman Lysecky / Professor of Electrical and Computer Engineering / Univ. of Arizona
 // Frank Vahid / Professor of Computer Science and Engineering / Univ. of California
 
+/*
+ * Victor Wong
+ * Spring 2024, CS212, William Iverson
+ * 05/28/2024
+ * Program 9
+ * Iterator and Set structure
+ */
+
 #include <functional>
 #include <iterator>
 
@@ -14,12 +22,14 @@ public:
     BSTNode* parent;
     BSTNode* left;
     BSTNode* right;
+    bool checked;
 
     BSTNode(int data, BSTNode* parent, BSTNode* left = nullptr, BSTNode* right = nullptr) {
         this->data = data;
         this->parent = parent;
         this->left = left;
         this->right = right;
+        this->checked = false;
     }
 
     int Count() {
@@ -71,15 +81,21 @@ public:
 
 class BSTIterator : public std::iterator<std::input_iterator_tag, int> {
 private:
+    BSTNode* startNode;
     BSTNode* currentNode;
+    bool endReached;
 
 public:
     BSTIterator(const BSTIterator& copyMe) {
         currentNode = copyMe.currentNode;
+        startNode = copyMe.startNode;
+        endReached = false;
     }
 
     BSTIterator(BSTNode* startNode) {
         currentNode = startNode;
+        this->startNode = startNode;
+        endReached = false;
     }
 
     bool operator==(const BSTIterator& rhs) const {
@@ -95,10 +111,42 @@ public:
         return currentNode->data;
     }
 
+    // sets current node to the min node
+    void returnToMin() {
+        // go back all the way up the tree (to the root)
+        while(startNode->parent != nullptr) {
+            startNode = startNode->parent;
+        }
+        //keep going left, until the smallest node is found
+        //(most left is the smallest in a BST)
+        while(startNode->left != nullptr) {
+            startNode = startNode->left;
+        }
+        currentNode = startNode;
+    }
+
     // Pre-increment operator
     BSTIterator& operator++() {
-        if (currentNode) {
-            currentNode = currentNode->GetSuccessor();
+        if(!endReached) {
+            if(currentNode) {
+                currentNode = currentNode->GetSuccessor();
+                if (!currentNode) {
+                    endReached = true;
+                    returnToMin();
+                }
+                else {
+                    currentNode->checked = true;
+                }
+            }
+        }
+        if(endReached) {
+            while(currentNode) {
+                if (!currentNode->checked) {
+                    currentNode->checked = true;
+                    break;
+                }
+                currentNode = currentNode->GetSuccessor();
+            }
         }
         return *this;
     }
@@ -106,10 +154,28 @@ public:
     // Post-increment operator
     BSTIterator operator++(int) {
         BSTIterator previous(*this);
-        if (currentNode) {
-            currentNode = currentNode->GetSuccessor();
+        if(!endReached) {
+            if(currentNode) {
+                currentNode = currentNode->GetSuccessor();
+                if (!currentNode) {
+                    endReached = true;
+                    returnToMin();
+                }
+                else {
+                    currentNode->checked = true;
+                }
+            }
         }
-        return previous;
+        if(endReached) {
+            while(currentNode) {
+                if (!currentNode->checked) {
+                    currentNode->checked = true;
+                    break;
+                }
+                currentNode = currentNode->GetSuccessor();
+            }
+        }
+        return *this;
     }
 };
 
