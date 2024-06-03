@@ -6,6 +6,14 @@ Frank Vahid / Professor of Computer Science and Engineering / Univ.of California
 February 2024
 */
 
+/*
+ * Victor Wong
+ * Spring 2024, CS212, William Iverson
+ * 06/03/2024
+ * Program 10
+ * Adjacency List Graph structure class
+ */
+
 #ifndef ADJACENCYLISTGRAPH_H
 #define ADJACENCYLISTGRAPH_H
 
@@ -39,11 +47,15 @@ public:
    // already exists in the graph, no change is made and false is returned.
    // Otherwise the new edge is added and true is returned.
    virtual bool AddDirectedEdge(Vertex* fromVertex, Vertex* toVertex) override {
+      // checks if the "from vertex" exists
       AdjacencyListVertex* fromVertexPtr = GetVertex(fromVertex->GetLabel());
       if(!fromVertexPtr) return false;
+      
+      // checks if the "to vertex" exists
       AdjacencyListVertex* toVertexPtr = GetVertex(toVertex->GetLabel());
       if(!toVertexPtr) return false;
 
+      // checks if the two have an edge
       if(HasEdge(fromVertexPtr, toVertexPtr)) return false;
       fromVertexPtr->adjacent.push_back(toVertexPtr);
       return true;
@@ -51,14 +63,30 @@ public:
 
    // Returns a vector of edges with the specified fromVertex.
    virtual std::vector<Edge> GetEdgesFrom(Vertex* fromVertex) override {
-      // TODO: Type your code here (remove placeholder line below)
-      return std::vector<Edge>();
+      std::vector<Edge> edgeVector;
+      AdjacencyListVertex* avlFromVertex = GetVertex(fromVertex->GetLabel());
+     
+      for (AdjacencyListVertex *vertex : vertices)
+      {
+         if(HasEdge(avlFromVertex, vertex)) {
+            edgeVector.push_back(Edge(avlFromVertex, vertex));
+         }
+      }
+      return edgeVector;
    }
-    
+
    // Returns a vector of edges with the specified toVertex.
    virtual std::vector<Edge> GetEdgesTo(Vertex* toVertex) override {
-      // TODO: Type your code here (remove placeholder line below)
-      return std::vector<Edge>();
+      std::vector<Edge> edgeVector;
+      AdjacencyListVertex* avlToVertex = GetVertex(toVertex->GetLabel());
+     
+      for (AdjacencyListVertex *vertex : vertices)
+      {
+         if(HasEdge(vertex, toVertex)) {
+            edgeVector.push_back(Edge(vertex, toVertex));
+         }
+      }
+      return edgeVector;
    }
     
    // Returns a vertex with a matching label, or nullptr if no such vertex
@@ -73,9 +101,12 @@ public:
 
    // Returns true if this graph has an edge from fromVertex to toVertex
    virtual bool HasEdge(Vertex* fromVertex, Vertex* toVertex) override {
-      for(Vertex* vertex : fromVertexPtr->adjacent)
-         if(vertex == toVertexPtr) return false;
-      return true;
+      // Get the pointer of the vertex
+      AdjacencyListVertex *fromVertexPtr = GetVertex(fromVertex->GetLabel());
+      
+      for (Vertex *vertex : fromVertexPtr->adjacent)
+         if(vertex == toVertex) return true;
+      return false;
    }
 };
 
