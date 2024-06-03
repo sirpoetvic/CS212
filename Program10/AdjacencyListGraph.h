@@ -27,18 +27,28 @@ public:
    // same label doesn't already exist in the graph. Returns the new vertex on
    // success, nullptr on failure.
    virtual Vertex* AddVertex(std::string newVertexLabel) override {
-      // TODO: Type your code here (remove placeholder line below)
-      return nullptr;
+      if(GetVertex(newVertexLabel))
+         return nullptr;
+
+      AdjacencyListVertex *vertex = new AdjacencyListVertex(newVertexLabel);
+      vertices.push_back(vertex);
+      return vertex;
    }
-    
+
    // Adds a directed edge from the first to the second vertex. If the edge
    // already exists in the graph, no change is made and false is returned.
    // Otherwise the new edge is added and true is returned.
    virtual bool AddDirectedEdge(Vertex* fromVertex, Vertex* toVertex) override {
-      // TODO: Type your code here (remove placeholder line below)
-      return false;
+      AdjacencyListVertex* fromVertexPtr = GetVertex(fromVertex->GetLabel());
+      if(!fromVertexPtr) return false;
+      AdjacencyListVertex* toVertexPtr = GetVertex(toVertex->GetLabel());
+      if(!toVertexPtr) return false;
+
+      if(HasEdge(fromVertexPtr, toVertexPtr)) return false;
+      fromVertexPtr->adjacent.push_back(toVertexPtr);
+      return true;
    }
-    
+
    // Returns a vector of edges with the specified fromVertex.
    virtual std::vector<Edge> GetEdgesFrom(Vertex* fromVertex) override {
       // TODO: Type your code here (remove placeholder line below)
@@ -53,15 +63,19 @@ public:
     
    // Returns a vertex with a matching label, or nullptr if no such vertex
    // exists
-   virtual Vertex* GetVertex(std::string vertexLabel) override {
-      // TODO: Type your code here (remove placeholder line below)
+   virtual AdjacencyListVertex* GetVertex(std::string vertexLabel) override {
+      for(AdjacencyListVertex* alv : vertices) {
+         if(alv->GetLabel() == vertexLabel)
+            return alv;
+      }
       return nullptr;
    }
-    
+
    // Returns true if this graph has an edge from fromVertex to toVertex
    virtual bool HasEdge(Vertex* fromVertex, Vertex* toVertex) override {
-      // TODO: Type your code here (remove placeholder line below)
-      return false;
+      for(Vertex* vertex : fromVertexPtr->adjacent)
+         if(vertex == toVertexPtr) return false;
+      return true;
    }
 };
 
